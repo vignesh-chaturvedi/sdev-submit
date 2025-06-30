@@ -34,7 +34,7 @@ fn generate_curl_command(
     // Add headers
     for (name, value) in headers.iter() {
         if let Ok(value_str) = value.to_str() {
-            // Skip some headers that curl adds automatically or aren't needed for replication
+
             let header_name = name.as_str().to_lowercase();
             if !matches!(header_name.as_str(), 
                 "host" | "user-agent" | "accept-encoding" | "x-forwarded-for" | 
@@ -45,7 +45,7 @@ fn generate_curl_command(
         }
     }
     
-    // Add body if present
+
     if !body.is_empty() && method != "GET" {
         curl_cmd.push_str(&format!(" -d '{}'", body.replace("'", "'\\''")));
     }
@@ -93,13 +93,11 @@ async fn logging_middleware(
         headers
     );
 
-    // Reconstruct the request with the body
+
     let reconstructed_req = Request::from_parts(parts, AxumBody::from(body_bytes));
     
-    // Call the next middleware/handler
     let response = next.run(reconstructed_req).await;
     
-    // Log the outgoing response
     let status = response.status();
     let response_headers = response.headers().clone();
     
@@ -114,26 +112,26 @@ async fn logging_middleware(
     response
 }
 
-/// Creates and configures the main application router
+
 pub fn create_router() -> Router {
     Router::new()
-        // POST /keypair - Generate new Solana keypair
+
         .route("/keypair", post(generate_keypair_handler))
-        // POST /token/create - Create SPL token mint instruction
+
         .route("/token/create", post(create_token_handler))
-        // POST /token/mint - Create SPL token mint_to instruction
+
         .route("/token/mint", post(mint_token_handler))
-        // POST /message/sign - Sign a message with secret key
+
         .route("/message/sign", post(sign_message_handler))
-        // POST /message/verify - Verify a message signature
+
         .route("/message/verify", post(verify_message_handler))
-        // POST /send/sol - Create SOL transfer instruction
+
         .route("/send/sol", post(send_sol_handler))
-        // POST /send/token - Create SPL token transfer instruction
+
         .route("/send/token", post(send_token_handler))
-        // Add logging middleware
+
         .layer(middleware::from_fn(logging_middleware))
-        // Add CORS middleware to allow cross-origin requests
+
         .layer(CorsLayer::permissive())
 }
 
@@ -144,7 +142,6 @@ mod tests {
     #[test]
     fn test_router_creation() {
         let _router = create_router();
-        // Basic test to ensure router can be created without panicking
         assert!(true);
     }
 } 

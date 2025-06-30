@@ -65,25 +65,24 @@ impl IntoResponse for AppError {
     }
 }
 
-/// Result type alias for convenience
 pub type Result<T> = std::result::Result<T, AppError>;
 
-/// Helper function to convert base58 decode errors
+
 pub fn base58_decode_error(err: bs58::decode::Error) -> AppError {
     AppError::DeserializationError(format!("Base58 decode error: {}", err))
 }
 
-/// Helper function to convert base64 decode errors  
+
 pub fn base64_decode_error(err: base64::DecodeError) -> AppError {
     AppError::DeserializationError(format!("Base64 decode error: {}", err))
 }
 
-/// Helper function to convert serialization errors
+
 pub fn serialization_error(err: impl std::fmt::Display) -> AppError {
     AppError::SerializationError(format!("Serialization error: {}", err))
 }
 
-/// Helper function to convert bincode errors
+
 pub fn bincode_error(err: impl std::fmt::Display) -> AppError {
     AppError::SerializationError(format!("Bincode error: {}", err))
 }

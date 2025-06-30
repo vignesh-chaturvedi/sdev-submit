@@ -27,7 +27,6 @@ use crate::services::solana::SolanaService;
 use crate::errors::{AppError, Result};
 use crate::validation;
 
-/// Custom JSON extractor that handles deserialization errors properly
 pub struct JsonExtractor<T>(pub T);
 
 #[async_trait]
@@ -69,7 +68,6 @@ where
 }
 
 /// Handler for POST /keypair
-/// Generates a new Solana keypair
 pub async fn generate_keypair_handler() -> Result<Json<ApiResponse<KeypairResponse>>> {
     info!("Handling keypair generation request");
 
@@ -88,7 +86,6 @@ pub async fn generate_keypair_handler() -> Result<Json<ApiResponse<KeypairRespon
 }
 
 /// Handler for POST /token/create
-/// Creates an SPL token mint instruction
 pub async fn create_token_handler(
     JsonExtractor(request): JsonExtractor<CreateTokenRequest>,
 ) -> Result<Json<ApiResponse<TokenInstructionResponse>>> {
@@ -118,7 +115,6 @@ pub async fn create_token_handler(
 }
 
 /// Handler for POST /token/mint
-/// Creates an SPL token mint_to instruction
 pub async fn mint_token_handler(
     JsonExtractor(request): JsonExtractor<MintTokenRequest>,
 ) -> Result<Json<ApiResponse<TokenInstructionResponse>>> {
@@ -150,7 +146,6 @@ pub async fn mint_token_handler(
 }
 
 /// Handler for POST /message/sign
-/// Signs a message with the provided secret key
 pub async fn sign_message_handler(
     JsonExtractor(request): JsonExtractor<SignMessageRequest>,
 ) -> Result<Json<ApiResponse<SignMessageResponse>>> {
@@ -175,7 +170,6 @@ pub async fn sign_message_handler(
 }
 
 /// Handler for POST /message/verify
-/// Verifies a message signature
 pub async fn verify_message_handler(
     JsonExtractor(request): JsonExtractor<VerifyMessageRequest>,
 ) -> Result<Json<ApiResponse<VerifyMessageResponse>>> {
@@ -205,7 +199,6 @@ pub async fn verify_message_handler(
 }
 
 /// Handler for POST /send/sol
-/// Creates a SOL transfer instruction
 pub async fn send_sol_handler(
     JsonExtractor(request): JsonExtractor<SendSolRequest>,
 ) -> Result<Json<ApiResponse<SendSolResponse>>> {
@@ -231,13 +224,11 @@ pub async fn send_sol_handler(
 }
 
 /// Handler for POST /send/token
-/// Creates an SPL token transfer instruction
 pub async fn send_token_handler(
     JsonExtractor(request): JsonExtractor<SendTokenRequest>,
 ) -> Result<Json<ApiResponse<SendTokenResponse>>> {
     info!("Handling token transfer request for mint: {}", request.mint);
 
-    // Comprehensive validation using validation module
     let destination = validation::validate_pubkey(&request.destination, "destination")?;
     let mint = validation::validate_pubkey(&request.mint, "mint")?;
     let owner = validation::validate_pubkey(&request.owner, "owner")?;
