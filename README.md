@@ -4,7 +4,7 @@
 
 ```bash
 git clone <repository_url>
-cd simple-rest-solana
+cd sdev-submit
 ```
 
 1. Install dependencies:
